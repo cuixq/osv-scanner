@@ -169,7 +169,7 @@ func MergeMavenParents(ctx context.Context, mavenClient datasource.MavenRegistry
 			if err := xml.NewDecoder(f).Decode(&proj); err != nil {
 				return fmt.Errorf("failed to unmarshal project: %w", err)
 			}
-			if proj.ProjectKey == current.ProjectKey && proj.Packaging == "pom" {
+			if proj.Packaging == "pom" {
 				// Only mark parent is found when the identifiers and packaging are exptected.
 				parentFound = true
 			}
@@ -194,7 +194,7 @@ func MergeMavenParents(ctx context.Context, mavenClient datasource.MavenRegistry
 			}
 		}
 		// Empty JDK and ActivationOS indicates merging the default profiles.
-		if err := result.MergeProfiles("", maven.ActivationOS{}); err != nil {
+		if err := proj.MergeProfiles("", maven.ActivationOS{}); err != nil {
 			return err
 		}
 		result.MergeParent(proj)
