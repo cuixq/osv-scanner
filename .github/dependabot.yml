@@ -4,26 +4,7 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
-updates:
-  - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "Australia/Sydney"
-    labels:
-      - "dependencies"
-    # Renovate's postUpdateOptions aren't directly supported in Dependabot.
-    # You might need to explore Dependabot's 'commit-message' option for similar functionality.
-    # See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#commit-message   
-
-    # gomodTidy
-    open-pull-requests-limit: 10
-    # osvVulnerabilityAlerts is enabled by default in Dependabot
-    vulnerability-alerts:
-      enabled: true
-      
+updates:   
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -32,16 +13,9 @@ updates:
       time: "06:00"
       timezone: "Australia/Sydney"
     labels:
-      - "dependencies"
+      - "workflows"
     open-pull-requests-limit: 10
-# lockFileMaintenance is handled automatically by Dependabot
-#  - package-ecosystem: "bundler"
-#    directory: "/"
-#    schedule:
-#      interval: "daily"
 
-# Renovate's packageRules require manual translation to Dependabot's config.
-# Here's an attempt to map some of them:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
@@ -53,21 +27,15 @@ updates:
       - "dependencies"
     open-pull-requests-limit: 10
     groups:
-      # This roughly maps to "matchUpdateTypes": ["major"]
       major-updates:
-        match:
-          update-type: ["major"]
-      # This roughly maps to "matchLanguages": ["golang"]
+        update-types:
+         - "major"
       osv-scanner-minor:
-        match:
-          dependency-type: ["direct"]  # Consider using "all" for wider coverage
+        update-types:
+         - "minor"
+         - "patch"
 
-# Ignoring paths is supported, but the pattern syntax might differ slightly
-  ignore:
-    - dependency-name: "golang.org/x/vuln"
-    - path: "**/fixtures/**"
-    - path: "**/fixtures-go/**"
-
-# 'constraints' in Renovate can be partially achieved using 'allowed-updates' in Dependabot
-# However, specifying a Go version constraint like "go": "1.22.7" is not directly supported.
-# You might need to explore Dependabot's 'ignore' conditions for a workaround.
+    ignore:
+      - dependency-name: "golang.org/x/vuln"
+      - path: "**/fixtures/**"
+      - path: "**/fixtures-go/**"
