@@ -63,11 +63,10 @@ updates:
           dependency-type: ["direct"]  # Consider using "all" for wider coverage
 
 # Ignoring paths is supported, but the pattern syntax might differ slightly
-ignore:
-  - dependency-name: "golang.org/x/vuln"
-  - update-types: ["version-update:semver-patch"]
-  - path: "**/fixtures/**"
-  - path: "**/fixtures-go/**"
+  ignore:
+    - dependency-name: "golang.org/x/vuln"
+    - path: "**/fixtures/**"
+    - path: "**/fixtures-go/**"
 
 # 'constraints' in Renovate can be partially achieved using 'allowed-updates' in Dependabot
 # However, specifying a Go version constraint like "go": "1.22.7" is not directly supported.
