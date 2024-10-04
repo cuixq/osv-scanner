@@ -14,10 +14,11 @@ updates:
       timezone: "Australia/Sydney"
     labels:
       - "dependencies"
-    osv-scanner-minor:
-      update-types:
-       - "minor"
-       - "patch"
+    groups:
+      osv-scanner-minor:
+        update-types:
+         - "minor"
+         - "patch"
     ignore:
       - dependency-name: "golang.org/x/vuln"
 
