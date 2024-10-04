@@ -34,8 +34,5 @@ updates:
         update-types:
          - "minor"
          - "patch"
-
     ignore:
       - dependency-name: "golang.org/x/vuln"
-      - path: "**/fixtures/**"
-      - path: "**/fixtures-go/**"
