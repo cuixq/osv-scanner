@@ -14,7 +14,6 @@ import (
 	"github.com/google/osv-scanner/internal/remediation/upgrade"
 	"github.com/google/osv-scanner/internal/resolution"
 	"github.com/google/osv-scanner/internal/resolution/client"
-	"github.com/google/osv-scanner/internal/resolution/datasource"
 	"github.com/google/osv-scanner/internal/resolution/lockfile"
 	"github.com/google/osv-scanner/internal/resolution/manifest"
 	"github.com/google/osv-scanner/pkg/reporter"
@@ -67,6 +66,10 @@ func Command(stdout, stderr io.Writer, r *reporter.Reporter) *cli.Command {
 
 					return nil
 				},
+			},
+			&cli.StringFlag{
+				Name:  "maven-registry",
+				Usage: "URL of the default Maven registry to fetch metadata",
 			},
 			&cli.StringFlag{
 				Name:  "relock-cmd",
@@ -168,8 +171,9 @@ func Command(stdout, stderr io.Writer, r *reporter.Reporter) *cli.Command {
 			},
 			// Offline database flags, copied from osv-scanner scan
 			&cli.BoolFlag{
-				Name:  "experimental-offline",
-				Usage: "checks for vulnerabilities using local databases that are already cached",
+				Name:    "experimental-offline-vulnerabilities",
+				Aliases: []string{"experimental-offline"},
+				Usage:   "checks for vulnerabilities using local databases that are already cached",
 			},
 			&cli.BoolFlag{
 				Name:  "experimental-download-offline-databases",
@@ -279,7 +283,7 @@ func action(ctx *cli.Context, stdout, stderr io.Writer) (reporter.Reporter, erro
 	}
 
 	if opts.Manifest != "" {
-		rw, err := manifest.GetReadWriter(opts.Manifest)
+		rw, err := manifest.GetReadWriter(opts.Manifest, ctx.String("maven-registry"))
 		if err != nil {
 			return nil, err
 		}
@@ -312,7 +316,7 @@ func action(ctx *cli.Context, stdout, stderr io.Writer) (reporter.Reporter, erro
 			}
 			opts.Client.DependencyClient = cl
 		case resolve.Maven:
-			cl, err := client.NewMavenRegistryClient(datasource.MavenCentral)
+			cl, err := client.NewMavenRegistryClient(ctx.String("maven-registry"))
 			if err != nil {
 				return nil, err
 			}
@@ -324,7 +328,7 @@ func action(ctx *cli.Context, stdout, stderr io.Writer) (reporter.Reporter, erro
 		}
 	}
 
-	if ctx.Bool("experimental-offline") {
+	if ctx.Bool("experimental-offline-vulnerabilities") {
 		var err error
 		opts.Client.VulnerabilityClient, err = client.NewOSVOfflineClient(
 			r,

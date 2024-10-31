@@ -911,6 +911,22 @@ func TestRun_MavenTransitive(t *testing.T) {
 			args: []string{"", "--config=./fixtures/osv-scanner-empty-config.toml", "--experimental-offline", "--experimental-download-offline-databases", "./fixtures/maven-transitive/pom.xml"},
 			exit: 0,
 		},
+		{
+			// Direct dependencies do not have any vulnerability.
+			name: "does not scan transitive dependencies for pom.xml with no-resolve",
+			args: []string{"", "--config=./fixtures/osv-scanner-empty-config.toml", "--experimental-no-resolve", "./fixtures/maven-transitive/pom.xml"},
+			exit: 0,
+		},
+		{
+			name: "scans dependencies from multiple registries",
+			args: []string{"", "--config=./fixtures/osv-scanner-empty-config.toml", "-L", "pom.xml:./fixtures/maven-transitive/registry.xml"},
+			exit: 1,
+		},
+		{
+			name: "resolve transitive dependencies with native datda source",
+			args: []string{"", "--config=./fixtures/osv-scanner-empty-config.toml", "--experimental-resolution-data-source=native", "-L", "pom.xml:./fixtures/maven-transitive/registry.xml"},
+			exit: 1,
+		},
 	}
 
 	for _, tt := range tests {
