@@ -12,10 +12,6 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-// DepsdevAPI is the URL to the deps.dev API. It is documented at
-// docs.deps.dev/api.
-const DepsdevAPI = "api.deps.dev:443"
-
 // System maps from a lockfile system to the depsdev API system.
 var System = map[osvconstants.Ecosystem]pb.System{
 	osvconstants.EcosystemNPM:      pb.System_NPM,
